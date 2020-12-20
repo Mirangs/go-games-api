@@ -1,0 +1,17 @@
+version: "3.7"
+
+services:
+  mongo:
+    image: "mongo:4.2"
+    ports:
+      - "30000:27017"
+    volumes:
+      - ./docker/volume/mongodb_main:/data/db
+      - ./docker/mongodb_main/.ash_history:/root/.ash_history:ro
+  redis:
+    image: "redis:alpine"
+    ports:
+      - "30001:6379"
+    volumes:
+      - ./docker/redis/redis.conf:/usr/local/etc/redis/redis.conf:ro
+      - ./docker/redis/.ash_history:/root/.ash_history:ro
