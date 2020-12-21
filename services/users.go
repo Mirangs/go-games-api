@@ -143,7 +143,6 @@ func (s UsersServices) GetUsersRating(limit, skip int64) []UserRatingRes {
 }
 func (s UsersServices) GetGamesStatistics(userId string, startDate, endDate time.Time) (data []bson.M, err error) {
 	userIdParsed, err := primitive.ObjectIDFromHex(userId)
-	log.Info(userIdParsed)
 	if err != nil {
 		return
 	}

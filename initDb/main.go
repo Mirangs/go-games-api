@@ -178,8 +178,12 @@ func main() {
 		FullTimestamp: true,
 	})
 	log.Info("Started DB initialization...")
-	client := helpers.ConnectToMongo()
-	err := createIndexes(client)
+	client, err := helpers.ConnectToMongo()
+	if err != nil {
+		log.Fatal("Error connecting to Mongo " + err.Error())
+		return
+	}
+	err = createIndexes(client)
 	if err != nil {
 		log.Fatal(err)
 		return
