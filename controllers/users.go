@@ -67,7 +67,11 @@ func (h UsersController) CreateUser(c *gin.Context) {
 		c.JSON(400, gin.H{"error": err.Error()})
 		return
 	}
-	res := services.UsersServices{Client: h.Client}.CreateUser(body)
+	res, err := services.UsersServices{Client: h.Client}.CreateUser(body)
+	if err != nil {
+		c.JSON(400, gin.H{"error": err.Error()})
+		return
+	}
 	jsonRes, err := json.Marshal(res)
 	if err != nil {
 		c.JSON(500, gin.H{"error": "Something went wrong"})

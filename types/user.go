@@ -2,8 +2,13 @@ package types
 
 import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"strings"
 	"time"
 )
+
+type BirthDate struct {
+	time.Time
+}
 
 type User struct {
 	ID        primitive.ObjectID `bson:"_id" json:"id,omitempty"`
@@ -12,7 +17,13 @@ type User struct {
 	Country   string             `bson:"country" json:"country" binding:"required"`
 	City      string             `bson:"city" json:"city" binding:"required"`
 	Gender    string             `bson:"gender" json:"gender" binding:"required"`
-	BirthDate time.Time          `bson:"birth_date" json:"birth_date" binding:"required"`
+	BirthDate BirthDate          `bson:"birth_date" json:"birth_date" binding:"required"`
+}
+
+func (b *BirthDate) UnmarshalJSON(data []byte) (err error) {
+	s := strings.Trim(string(data), "\"")
+	b.Time, err = time.Parse("2006-1-2", s)
+	return
 }
 
 type UserRatingRes struct {

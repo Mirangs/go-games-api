@@ -3,6 +3,7 @@ package services
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"github.com/Mirangs/bm-go-test-task/collections"
 	"github.com/Mirangs/bm-go-test-task/helpers"
 	. "github.com/Mirangs/bm-go-test-task/types"
@@ -63,14 +64,20 @@ func (s UsersServices) GetUserById(id string) User {
 	}
 	return user
 }
-func (s UsersServices) CreateUser(userData User) interface{} {
+func (s UsersServices) CreateUser(userData User) (data interface{}, err error) {
 	userData.ID = primitive.NewObjectID()
+	var existsUser User
+	err = s.Client.Database("Leads").Collection("users").FindOne(context.TODO(), bson.M{"email": userData.Email}).Decode(&existsUser)
+	if existsUser != (User{}) {
+		return data, errors.New("user with this email already exists")
+	}
+
 	res, err := s.Client.Database("Leads").Collection("users").InsertOne(context.TODO(), userData)
 	if err != nil {
 		log.Error(err)
-		return nil
+		return
 	}
-	return res.InsertedID
+	return res.InsertedID, nil
 }
 func (s UsersServices) UpdateUser(id string, userData User) interface{} {
 	userId, err := primitive.ObjectIDFromHex(id)
