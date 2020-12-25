@@ -57,7 +57,7 @@ func (h UsersController) GetUserById(c *gin.Context) {
 	})
 }
 func (h UsersController) CreateUser(c *gin.Context) {
-	var body User
+	var body UserDTO
 	if err := c.ShouldBindJSON(&body); err != nil {
 		c.JSON(400, gin.H{"error": err.Error()})
 		return

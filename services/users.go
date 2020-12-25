@@ -64,15 +64,23 @@ func (s UsersServices) GetUserById(id string) User {
 	}
 	return user
 }
-func (s UsersServices) CreateUser(userData User) (data interface{}, err error) {
-	userData.ID = primitive.NewObjectID()
+func (s UsersServices) CreateUser(userData UserDTO) (data interface{}, err error) {
 	var existsUser User
 	err = s.Client.Database("Leads").Collection("users").FindOne(context.TODO(), bson.M{"email": userData.Email}).Decode(&existsUser)
 	if existsUser != (User{}) {
 		return data, errors.New("user with this email already exists")
 	}
 
-	res, err := s.Client.Database("Leads").Collection("users").InsertOne(context.TODO(), userData)
+	var newUser User
+	newUser.ID = primitive.NewObjectID()
+	newUser.Email = userData.Email
+	newUser.LastName = userData.LastName
+	newUser.Country = userData.Country
+	newUser.City = userData.City
+	newUser.Gender = userData.Gender
+	newUser.BirthDate = primitive.NewDateTimeFromTime(userData.BirthDate.Time)
+
+	res, err := s.Client.Database("Leads").Collection("users").InsertOne(context.TODO(), newUser)
 	if err != nil {
 		log.Error(err)
 		return
