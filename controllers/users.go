@@ -46,8 +46,13 @@ func (h UsersController) GetUsers(c *gin.Context) {
 func (h UsersController) GetUserById(c *gin.Context) {
 	userId := c.Param("id")
 	user := services.UsersServices{Client: h.Client}.GetUserById(userId)
-	code := 200
-	c.JSON(code, gin.H{
+	if user == (User{}) {
+		c.JSON(404, gin.H{
+			"error": "User not found",
+		})
+		return
+	}
+	c.JSON(200, gin.H{
 		"user": user,
 	})
 }

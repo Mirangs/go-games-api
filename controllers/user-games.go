@@ -41,6 +41,11 @@ func (h UserGamesController) GetUserGames(c *gin.Context) {
 func (h UserGamesController) GetUserGameById(c *gin.Context) {
 	userGameId := c.Param("id")
 	userGame := services.UserGamesServices{Client: h.Client}.GetUserGameById(userGameId)
+	if userGame == (UserGame{}) {
+		c.JSON(404, gin.H{
+			"error": "User game not found",
+		})
+	}
 	c.JSON(200, gin.H{
 		"user-game": userGame,
 	})
